@@ -7,3 +7,4 @@ Our contract is optimized for gas usage and includes functions to add and remove
 It allows for the declaration of roles, assignment of roles to users, and revocation of roles. The contract provides several functions for adding, removing, and listing roles and users. The contract also includes some security features to protect against unauthorized access, such as an AdminGuard modifier that prevents an address associated with the "admin" role from being assigned any other role. Overall, this contract can be used to manage access to various functions or features within a decentralized application (dApp) or blockchain-based system.
 
 End of Study project 
+![roleaccess drawio](https://user-images.githubusercontent.com/124497891/232068142-4e73cbcb-1b1e-4559-8e07-935af2946035.png)
