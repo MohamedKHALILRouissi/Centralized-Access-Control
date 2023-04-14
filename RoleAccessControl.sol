@@ -105,5 +105,7 @@ contract Role {
     function ListAllAdmins() external view onlyAdmin() returns(address[] memory) {
     // WIP
     }
+    
+    //@dev map IoT devices to the owner 
 
 }
