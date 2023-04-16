@@ -1,14 +1,11 @@
 //SPDX-License-Identifier: opensource
 // @authors:   mohamed khalil rouissi    mohamed amine ghodhbene 
-// @description: centralized role based access control 
-// @missing : interface for the contract 
-
 /*
 rootadmin can be declared as any other Role but the root admin is the trust authority 
 */
 
 /*
- * Description : 
+ * @description: 
  *  Centralized Role-Based Access Control (CRBAC) system. It allows defining and managing roles and permissions for users of a DApp, granting or revoking access
  *  based on those roles. The contract defines several events for logging various actions such as adding or removing a user or a role, revoking user roles,
  *  creating or revoking admin roles, removing or declaring roles, and removing a role forcibly.
