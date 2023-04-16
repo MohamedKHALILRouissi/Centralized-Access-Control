@@ -1,2 +1,68 @@
-//WIP
-interface
+// SPDX-License-Identifier: opensource
+
+pragma solidity ^0.8.0;
+
+/*
+ * @dev Interface of the RoleBasedAccess
+*/
+
+/*
+rootadmin can be declared as any other Role but the root admin is the trust authority 
+*/
+
+interface IRoleBasedAccess {
+
+
+    /**
+    * declare roles examples ( farmer , worker , grower ,administrator ) , admin role declared automatical to prevent any typo or misuse
+    */
+    function DeclareRole ( string memory _Role ) external;
+    /**
+    * remove Role , you will get warning if you want to remove assigned Role , you must remove all the assigned Role and then remove the Role or use ForceRemoveRole 
+    */
+    function removeRole( string memory _Role) external; 
+    /**
+    * force remove Role , it will remove the Role and assgined Role to addresses NoT safe 
+    */
+    function ForceRemoveRole( string memory _Role) external; 
+    /**
+    * add admins , you dont need to specify the Role it will be added automatically 
+    */
+    function AddAdmin(address _adminaddr ) external; 
+    /**
+    * revoke admins 
+    */
+    function removeAdmin(address _adminaddr) external;
+    /**
+    * add User(address) with a Role , the Role must be declared first , and this is the initial Role , you can add Role later with 'AddRoleUser' 
+    */ 
+    function AddUser(address _address , string memory _Role) external; 
+    /**
+    * remove User(address) , it will remove the address and it's Roles
+    */ 
+    function RemoveUser(address _address) external;
+    /**
+    * add new Role to already existing User(address) , the address must exist first to add new Role 
+    */
+    function AddRoleUser(address _address , string memory _Role) external;
+    /**
+    * revoke a single Role from a User(address)
+    */
+    function RemoveRoleUser(address _address , string memory _Role) external;
+    /**
+    * check wether a address is assigned to the Role 
+    */
+    function checkAssignedRole(address _address, string memory _Role) external view returns(bool);
+    /**
+    * list all the roles assigned to a address 
+    */
+    function ListallRolesByAddress(address _address) external view returns(string[] memory);
+    /**
+    * list all address by Role assigned , you can use _Role="admin" but you msg.sender must be the admin , you can't list admins as a Standard User 
+    */
+    function listallbyRole(string memory _Role) external view returns (address[] memory);
+    /**
+    * list all defined Roles
+    */
+    function ListAllRoles() external view returns (string[] memory);
+}
