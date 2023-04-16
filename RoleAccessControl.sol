@@ -3,6 +3,17 @@
 // @description: centralized role based access control 
 // @missing : interface for the contract 
 
+/*
+rootadmin can be declared as any other Role but the root admin is the trust authority 
+*/
+
+/*
+ * Description : 
+ *  Centralized Role-Based Access Control (CRBAC) system. It allows defining and managing roles and permissions for users of a DApp, granting or revoking access
+ *  based on those roles. The contract defines several events for logging various actions such as adding or removing a user or a role, revoking user roles,
+ *  creating or revoking admin roles, removing or declaring roles, and removing a role forcibly.
+ * 
+*/
 
 
 pragma solidity ^0.8.0;
@@ -21,7 +32,7 @@ contract CentralizedRoleBasedAccessControl {
     event RoleDeclared(uint256 timestamp, string _Role);
     
 
-
+    string[] public ListOfRoles;
     address[] addresses; 
     address internal rootadmin;
     mapping(string => bool) public role;
@@ -56,6 +67,15 @@ contract CentralizedRoleBasedAccessControl {
             }
         }
         return -1;
+    }
+
+    function _DeletelistallRoles (string memory _Role) internal {
+        for ( uint i= 0; i < ListOfRoles.length; i++) {
+            if ( keccak256(abi.encodePacked(_Role)) == keccak256(abi.encodePacked(ListOfRoles[i]))) {
+                ListOfRoles[i] = ListOfRoles[ListOfRoles.length - 1 ];
+                ListOfRoles.pop();
+            }
+        }
     }
 
     //@dev : get the index of the address inside the addresses list 
@@ -105,20 +125,28 @@ contract CentralizedRoleBasedAccessControl {
         }
         return y;
     }
+    //@dev: check wether the input is empty 
+    function _isStringEmpty(string memory _str) internal pure returns (bool) {
+        return bytes(_str).length == 0;
+    }
 
 
 
     //@dev: define existing roles and will be used later for validation
     function DeclareRole ( string memory _Role ) external onlyAdmin() {
+        require(_isStringEmpty(_Role)== false,"the input must not be empty");
         require(!role[_Role] ,"role already exist");
         role[_Role]=true;
+        ListOfRoles.push(_Role);
         emit RoleDeclared(block.timestamp,_Role);
     }
 
     //@dev : remove a role only if the role is not being used should be used first 
     function removeRole( string memory _Role) external onlyAdmin() {
+        require(_isStringEmpty(_Role)== false,"the input must not be empty");
         require(_RoleExist(_Role) == false,"the role is assigned you should remove the role or use ForceRemove"); // SAFE REMOVE 
         delete(role[_Role]);
+        _DeletelistallRoles(_Role);
         emit RoleRemoved(block.timestamp,_Role);
     }
 
@@ -128,6 +156,7 @@ contract CentralizedRoleBasedAccessControl {
         require(role[_Role] == true  , "role doesn't exist");
         delete(role[_Role]);
         _DeleteRole(_Role);
+        _DeletelistallRoles(_Role);
         emit ForceRoleRemoved(block.timestamp,_Role);
         
 
@@ -181,9 +210,16 @@ contract CentralizedRoleBasedAccessControl {
         roles[_address].pop();
         emit UserRoleRevoked(block.timestamp,_address,_Role);
     }
+    //@dev : will be used for modifier in other contract to check wether the msg.sender has a Role 
+    function checkAssignedRole(address _address, string memory _Role) external view returns(bool) {
+        if(_GetIndexOfRole(_Role,_address) != -1 ) {
+            return true;
+        }
+        return false; 
+    }           
 
         //@dev: administrator dashboard Front UI functions 
-
+        //      most of this function will be removed later because it will be implemnted with a web3 
     //@dev : list all associated roles for address 
     function ListallRolesByAddress(address _address) external view returns(string[] memory) {
         return roles[_address];
@@ -206,6 +242,12 @@ contract CentralizedRoleBasedAccessControl {
         }
         return outputaddresses;
     }
-    //@dev IoT access control 
-    
+    //@dev : list all roles 
+    function ListAllRoles() external view returns (string[] memory) {
+        string[] memory AllRoles = new string[](ListOfRoles.length);
+        for ( uint i = 0 ; i < ListOfRoles.length; i++) {
+            AllRoles[i] = ListOfRoles[i];
+        }
+        return AllRoles;
+    }
 }
