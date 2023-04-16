@@ -1,4 +1,7 @@
 # Centralized-Role-Control
+Missing intergration (WIP)
+Missing unittest (WIP) 
+
 This code is a Solidity smart contract that implements a centralized Role Based Access Control (RBAC) system.
 Introducing a decentralized solution for managing access control in supply chain and value chain systems. Our contract, built on the Ethereum blockchain using Solidity, provides a centralized role-based access control mechanism. The contract allows the root admin to define, remove, and manage roles for users and admins, and also provides protection against data dumping.
 The contract includes functions to declare roles, add or remove admins, add or remove roles to users, and revoke user roles. It also includes events that can be used to monitor the changes to the roles and users in the contract.
