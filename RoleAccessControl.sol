@@ -141,7 +141,7 @@ contract CentralizedRoleBasedAccessControl {
     //@dev : remove a role only if the role is not being used should be used first 
     function removeRole( string memory _Role) external onlyAdmin() {
         require(_isStringEmpty(_Role)== false,"the input must not be empty");
-        require(_RoleExist(_Role) == false,"the role is assigned you should remove the role or use ForceRemove"); // SAFE REMOVE 
+        require(_RoleExist(_Role) == false,"the role is being used by at least one address ,you should remove the role or use ForceRemove"); // SAFE REMOVE 
         delete(role[_Role]);
         _DeletelistallRoles(_Role);
         emit RoleRemoved(block.timestamp,_Role);
