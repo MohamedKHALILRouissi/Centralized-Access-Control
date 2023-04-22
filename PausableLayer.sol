@@ -13,10 +13,8 @@ pragma solidity ^0.8.0;
 abstract contract PausableLayer {   
     event PauseContractCRBAC(uint256 timestamp,string reason);
     event StartContratCRBAC(uint256 timestamp);
-    bool public state;
-    constructor() {
-        state = true;
-    }
+    bool public state = true;
+
 
 
     modifier RunningOnly() {
@@ -24,13 +22,13 @@ abstract contract PausableLayer {
         _;
     }
 
-    function pause(string memory _reason) external virtual  {
+    function _pause(string memory _reason) internal virtual  {
         require(state == true,"can only be pressed when the contract is running");
         state = false;
         emit PauseContractCRBAC(block.timestamp,_reason);
     }
 
-    function restart() external virtual   {
+    function _restart() internal  virtual   {
         require(state == false,"can only be pressed when the contract is paused");
         state = true;
         emit StartContratCRBAC(block.timestamp);
