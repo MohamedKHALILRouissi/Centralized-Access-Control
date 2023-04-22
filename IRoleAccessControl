@@ -1,9 +1,12 @@
-// SPDX-License-Identifier: opensource
+//SPDX-License-Identifier: opensource
+// @authors:   mohamed khalil rouissi    mohamed amine ghodhbene 
+// @description: interface centralized role based access control 
 
 pragma solidity ^0.8.0;
 
 /*
  * @dev Interface of the RoleBasedAccess
+ * QUOTE : “Theatricality and deception are powerful agents for the uninitiated. But we are initiated, aren’t we Bruce?”
 */
 
 /*
@@ -17,6 +20,10 @@ interface IRoleBasedAccess {
     * declare roles examples ( farmer , worker , grower ,administrator ) , admin role declared automatical to prevent any typo or misuse
     */
     function DeclareRole ( string memory _Role ) external;
+    /**
+    *  check wether a role exist 
+    */
+    function _RoleExist(string memory _Role) external view returns (bool);           //@dev check if you could defined as external
     /**
     * remove Role , you will get warning if you want to remove assigned Role , you must remove all the assigned Role and then remove the Role or use ForceRemoveRole 
     */
