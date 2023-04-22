@@ -3,7 +3,7 @@
 // @description: centralized role based access control 
 /*
  * rootadmin can be declared as any other Role but the root admin is the trust authority 
- * no address should live in the storage without role 
+ * not address should live in the storage without role 
  * admins can't add admins or remove admins 
 */
 
@@ -50,7 +50,7 @@ contract CentralizedRoleBasedAccessControl is PausableLayer  {
     //bool public state = true;
     mapping(string => role) public Role;
     mapping(address => bool) internal Admins;
-    mapping(address => string[]) internal Roles;  //@dev this will proctect the information from total data dumping
+    mapping(address => string[]) public Roles;  //@dev this will proctect the information from total data dumping
 
     constructor(){
         //@dev: define the rootadmin central authority 
@@ -186,6 +186,7 @@ contract CentralizedRoleBasedAccessControl is PausableLayer  {
         delete(Role[_Role]);
         _DeletelistallRoles(_Role);
         emit RoleRemoved(block.timestamp,_Role);
+        // add some functionality to check if the user have 2 differnt roles , then remove the role even if the role is assigned to one make more practical
     }
 
     //@dev: remove defined roles , also will remove the assigned role to all the addresses  should be used as last resort 
@@ -224,9 +225,9 @@ contract CentralizedRoleBasedAccessControl is PausableLayer  {
     //@dev : completely remove a user 
     function RemoveUser(address _address) external RunningOnly() onlyAdmins() {
         // add rules here shoudlnt remove admin 
-        delete Roles[_address];
-        _DeleteUserFromAddresses(_address);
         _DeductNumber(_address);
+        _DeleteUserFromAddresses(_address);
+        delete Roles[_address];
         emit UserRemoved(block.timestamp,_address);
     }
 
@@ -235,15 +236,15 @@ contract CentralizedRoleBasedAccessControl is PausableLayer  {
         require(Roles[_address].length >= 1, " the address must be declared first");
         require(_GetIndexOfRole(_Role,_address) == -1,"the role already exist for this user");
         Roles[_address].push(_Role);
+        Role[_Role].number++;
         emit UserAddRole(block.timestamp,_address,_Role);
     }
     //@dev : remove a specific role 
     function RemoveRoleUser(address _address , string memory _Role) external RunningOnly() onlyAdmins() RoleDefined(_Role)  {
         require(Roles[_address].length > 1, " the address must be declared first , the address must have more then one role ");   //@dev no Address shoud live in the storage without Role , if you want to remove the user use deleteUser 
         require(_GetIndexOfRole(_Role,_address) >= 0,"the Role doesnt exist");
-        Roles[_address][uint(_GetIndexOfRole(_Role,_address))] = Roles[_address][Roles[_address].length - 1 ]; // unordered remove clean lists
-        Roles[_address].pop();
         _UnorderedDeleteRoles(_address,uint(_GetIndexOfRole(_Role,_address)));
+        Role[_Role].number--;
         emit UserRoleRevoked(block.timestamp,_address,_Role);
     }
     //@dev : will be used for modifier in other contract to check wether the msg.sender has a Role 
@@ -254,7 +255,7 @@ contract CentralizedRoleBasedAccessControl is PausableLayer  {
         return false; 
     }
 
-    function CheckAdmins(address _address) external RunningOnly() view   returns(bool) {
+    function CheckAdmins(address _address) external RunningOnly() view returns(bool) {
         return Admins[_address];
     }           
 
@@ -276,6 +277,10 @@ contract CentralizedRoleBasedAccessControl is PausableLayer  {
         }
         return false;
     }
+
+    /*
+    when you press Roles you should get error message to tell that the user doesn't exist it good for UI
+    */
 
 
     /* NOT WORTH IT 
