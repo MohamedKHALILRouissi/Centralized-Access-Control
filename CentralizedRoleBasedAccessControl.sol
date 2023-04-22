@@ -3,7 +3,7 @@
 // @description: centralized role based access control 
 /*
  * rootadmin can be declared as any other Role but the root admin is the trust authority 
- * not address should live in the storage without role 
+ * no address should live in the storage without role 
  * admins can't add admins or remove admins 
 */
 
@@ -23,7 +23,7 @@
 
 pragma solidity ^0.8.0;
 
-import "./PausableLayer.sol";
+import "./Pausablelayer.sol";
 
 contract CentralizedRoleBasedAccessControl is PausableLayer  {
 
@@ -163,6 +163,13 @@ contract CentralizedRoleBasedAccessControl is PausableLayer  {
     
     
     //external functions 
+
+    function pause(string memory _reason) external onlyRootAdmin() {
+        _pause(_reason);
+    }
+    function restart() external onlyRootAdmin() {
+        _restart();
+    }
 
 
     //@dev: define existing roles and will be used later for validation
