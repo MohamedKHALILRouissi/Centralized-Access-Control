@@ -13,7 +13,7 @@ pragma solidity ^0.8.0;
 rootadmin can be declared as any other Role but the root admin is the trust authority 
 */
 
-interface IRoleBasedAccess {
+interface ICentralizedRoleBasedAccess {
 
 
     /**
@@ -27,7 +27,7 @@ interface IRoleBasedAccess {
     /**
     * remove Role , you will get warning if you want to remove assigned Role , you must remove all the assigned Role and then remove the Role or use ForceRemoveRole 
     */
-    function removeRole( string memory _Role) external; 
+    function RemoveRole( string memory _Role) external; 
     /**
     * force remove Role , it will remove the Role and assgined Role to addresses NoT safe 
     */
@@ -39,7 +39,7 @@ interface IRoleBasedAccess {
     /**
     * revoke admins 
     */
-    function removeAdmin(address _adminaddr) external;
+    function RemoveAdmin(address _adminaddr) external;
     /**
     * add User(address) with a Role , the Role must be declared first , and this is the initial Role , you can add Role later with 'AddRoleUser' 
     */ 
@@ -59,7 +59,7 @@ interface IRoleBasedAccess {
     /**
     * check wether a address is assigned to the Role 
     */
-    function checkAssignedRole(address _address, string memory _Role) external view returns(bool);
+    function CheckAssignedRole(address _address, string memory _Role) external view returns(bool);
     /**
     * list all the roles assigned to a address 
     */
@@ -72,4 +72,9 @@ interface IRoleBasedAccess {
     * list all defined Roles
     */
     function ListAllRoles() external view returns (string[] memory);
+
+    /**
+    * check wether the address is admin or not 
+    */
+    function CheckAdmins(address _address) external view returns(bool);
 }
