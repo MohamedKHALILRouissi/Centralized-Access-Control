@@ -205,7 +205,7 @@ contract CentralizedRoleBasedAccessControl is PausableLayer  {
        emit AdminCreated(block.timestamp,_adminaddr);
     }
     //@dev: revoke admin 
-    function removeAdmin(address _adminaddr) external RunningOnly() onlyRootAdmin() {
+    function RemoveAdmin(address _adminaddr) external RunningOnly() onlyRootAdmin() {
         require(Admins[_adminaddr] == true, "Address is not an admin");
         delete Admins[_adminaddr];
         emit AdminRevoked(block.timestamp,_adminaddr);
